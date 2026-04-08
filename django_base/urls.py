@@ -16,7 +16,7 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from django_base.controller.user_controller import UserController
 
@@ -39,4 +39,5 @@ urlpatterns = [
         ),
         name="api_user_detail",
     ),
+    path("silk/", include("silk.urls", namespace="silk")),
 ]

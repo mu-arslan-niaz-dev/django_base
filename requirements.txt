@@ -2,7 +2,9 @@ asgiref==3.11.1
 black==26.3.1
 click==8.3.2
 Django==6.0.3
+django-silk==5.5.0
 djangorestframework==3.17.1
+gprof2dot==2025.4.14
 mypy_extensions==1.1.0
 packaging==26.0
 pathspec==1.0.4

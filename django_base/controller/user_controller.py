@@ -11,6 +11,8 @@ from django_base.serializers.user import (
     UserUpdateSerializer,
 )
 
+from silk.profiling.profiler import silk_profile
+
 
 class UserPagination(PageNumberPagination):
     page_size = 50
@@ -38,6 +40,7 @@ class UserController(
             return UserDetailSerializer
         return UserListSerializer
 
+    @silk_profile(name="UserController.list")
     def list(self, request, *args, **kwargs):
         queryset = apply_user_list_query_params(
             self.get_queryset(), request.query_params
@@ -60,10 +63,12 @@ class UserController(
             status=status.HTTP_200_OK,
         )
 
+    @silk_profile(name="UserController.retrieve")
     def retrieve(self, request, *args, **kwargs):
         response = super().retrieve(request, *args, **kwargs)
         return Response({"data": response.data}, status=status.HTTP_200_OK)
 
+    @silk_profile(name="UserController.create")
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -73,10 +78,12 @@ class UserController(
             status=status.HTTP_201_CREATED,
         )
 
+    @silk_profile(name="UserController.update")
     def update(self, request, *args, **kwargs):
         response = super().update(request, *args, **kwargs)
         return Response({"data": response.data}, status=status.HTTP_200_OK)
 
+    @silk_profile(name="UserController.destroy")
     def destroy(self, request, *args, **kwargs):
         super().destroy(request, *args, **kwargs)
         return Response(status=status.HTTP_204_NO_CONTENT)
