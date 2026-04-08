@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework import mixins, status, viewsets
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from typing import TYPE_CHECKING, Any, Callable, TypeVar
 
 from django_base.filters.user_list_query import apply_user_list_query_params
 from django_base.serializers.user import (
@@ -10,6 +11,20 @@ from django_base.serializers.user import (
     UserListSerializer,
     UserUpdateSerializer,
 )
+
+F = TypeVar("F", bound=Callable[..., Any])
+
+if TYPE_CHECKING:
+
+    def profile(func: F) -> F: ...
+
+else:
+    try:
+        profile
+    except NameError:
+
+        def profile(func: F) -> F:
+            return func
 
 
 class UserPagination(PageNumberPagination):
@@ -38,6 +53,7 @@ class UserController(
             return UserDetailSerializer
         return UserListSerializer
 
+    @profile
     def list(self, request, *args, **kwargs):
         queryset = apply_user_list_query_params(
             self.get_queryset(), request.query_params
